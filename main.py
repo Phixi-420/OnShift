@@ -2,12 +2,10 @@ import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 
-# Initialize the schedule DataFrame
 def load_schedule():
     columns = ['Employee Name', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']
     return pd.DataFrame(columns=columns)
 
-# Function to add an employee to the schedule
 def add_employee():
     employee_name = entry_employee_name.get()
     shift_details = [
@@ -17,25 +15,21 @@ def add_employee():
     schedule_df.loc[len(schedule_df)] = [employee_name] + shift_details
     update_table()
 
-# Function to remove an employee from the schedule
 def remove_employee():
     employee_name = entry_employee_name.get()
     global schedule_df
     schedule_df = schedule_df[schedule_df['Employee Name'] != employee_name]
     update_table()
 
-# Function to adjust a shift time for a specific employee and day
 def adjust_shift(employee_name, day, shift_time):
     schedule_df.loc[schedule_df['Employee Name'] == employee_name, day] = shift_time
 
-# Function to count the number of populated cells in each column (excluding headers)
 def count_populated_cells():
     counts = {}
     for day in schedule_df.columns[1:]:  # Skip 'Employee Name'
         counts[day] = schedule_df[day].count()
     label_counts.config(text=f"Populated cells per day: {counts}")
 
-# Function to update the displayed table in the GUI
 def update_table():
     for row in tree.get_children():
         tree.delete(row)
@@ -44,7 +38,6 @@ def update_table():
         values = [row[col] for col in schedule_df.columns]
         tree.insert("", "end", values=values)
 
-# Function to display the table with color-coding for "OFF" days
 def display_schedule():
     for row in tree.get_children():
         tree.delete(row)
@@ -58,14 +51,12 @@ def display_schedule():
                 tree.tag_configure("off", background="black", foreground="white")
                 tree.item(item, tags="off")
 
-# Set up the main tkinter window
+
 root = tk.Tk()
 root.title("Weekly Work Schedule")
 
-# Schedule DataFrame
 schedule_df = load_schedule()
 
-# Entry widgets for employee details
 frame_inputs = tk.Frame(root)
 frame_inputs.pack()
 
@@ -73,7 +64,6 @@ tk.Label(frame_inputs, text="Employee Name").grid(row=0, column=0)
 entry_employee_name = tk.Entry(frame_inputs)
 entry_employee_name.grid(row=0, column=1)
 
-# Day-specific entry fields
 days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 entries = []
 for i, day in enumerate(days):
@@ -84,15 +74,12 @@ for i, day in enumerate(days):
 
 entry_sat, entry_sun, entry_mon, entry_tue, entry_wed, entry_thu, entry_fri = entries
 
-# Button to add an employee
 btn_add = tk.Button(frame_inputs, text="Add Employee", command=add_employee)
 btn_add.grid(row=3, column=0, columnspan=2, pady=5)
 
-# Button to remove an employee
 btn_remove = tk.Button(frame_inputs, text="Remove Employee", command=remove_employee)
 btn_remove.grid(row=3, column=2, columnspan=2, pady=5)
 
-# Display table with Treeview widget
 frame_table = tk.Frame(root)
 frame_table.pack(pady=10)
 
@@ -104,18 +91,14 @@ for col in columns:
 
 tree.pack()
 
-# Label to show populated cell counts
 label_counts = tk.Label(root, text="Populated cells per day: ")
 label_counts.pack()
 
-# Button to count populated cells
 btn_count = tk.Button(root, text="Count Populated Cells", command=count_populated_cells)
 btn_count.pack(pady=5)
 
-# Update table initially
 update_table()
 
-# Run the tkinter main loop
 root.mainloop()
 
 
